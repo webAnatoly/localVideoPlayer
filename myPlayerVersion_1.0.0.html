@@ -7,18 +7,19 @@
   <title>Simple Player</title>
 </head>
 <style>
-  h3 { color: rgb(80, 119, 133) }
+  h3 { color: rgb(80, 119, 133); margin: 3px auto; }
   body { 
     padding-top: 700px;
     background-color: rgb(181, 192, 192);
     height: 1800px;
     width: 4500px;
   }
+  p { margin: 7px auto; }
   input { 
-    display: block;
+    display: inline-block;
     margin: auto;
   }
-  #playerContainer {
+  .playerContainer {
     margin: auto;
     text-align: center;
   }
@@ -27,6 +28,7 @@
     width: 1280px;
     height: 720px;
     margin: auto;
+    margin-top: 10px;
   }
 
   /*субтитры можно стилизовать через псевдоэлемент ::cue */
@@ -37,11 +39,12 @@
   } */
 </style>
 <body>
-  <div id="playerContainer">
+  <div class="playerContainer">
     <h3>HTML5 local video file player</h3>
-    <p id="message">Chose two files. One with .mp4 extensions another subtitles .vtt</p>
+    <p class="playerContainer__message">Chose two files. One with .mp4 extensions another subtitles .vtt</p>
     <input type="file" multiple/>
-    <video id="video" controls autoplay>
+    <button class="playerContainer__hideControlsButton">HideControls</button>
+    <video id="video" contrors autoplay>
       <track id="subTrack" src="" default>
     </video>
   </div>
@@ -51,7 +54,7 @@
       const URL = window.URL || window.webkitURL;
       const videoNode = document.querySelector('video');
       const subTrackElem = document.querySelector('#subTrack');
-      const message = document.querySelector('#message');
+      const message = document.querySelector('.playerContainer > .playerContainer__message');
 
       const playSelectedFile = function (event) {
         let videoFile;
@@ -125,6 +128,20 @@
         setTimeout(() => { window.scrollTo(1400, 700) }, 0)
       }
       window.onload = setVideoInCenter();
+
+      // скрыть(показать) элементы управления
+      const showControlsButton = document.querySelector(".playerContainer__hideControlsButton");
+      function hideControlsButtonHandle() {
+        console.log("videoNode.controls", videoNode);
+        if(!videoNode.controls) {
+          videoNode.controls = true;
+          showControlsButton.innerHTML = "HideControls";
+        } else {
+          videoNode.controls = false;
+          showControlsButton.innerHTML = "ShowControls";
+        }
+      }
+      showControlsButton.addEventListener('click', hideControlsButtonHandle);
     })()
   </script>
 </body>
