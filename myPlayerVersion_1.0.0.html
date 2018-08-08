@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Simple Player</title>
+</head>
+<style>
+  h3 { color: rgb(80, 119, 133) }
+  body { 
+    padding-top: 700px;
+    background-color: rgb(181, 192, 192);
+    height: 1800px;
+    width: 4500px;
+  }
+  input { 
+    display: block;
+    margin: auto;
+  }
+  #playerContainer {
+    margin: auto;
+    text-align: center;
+  }
+  #video {
+    display: block;
+    width: 1280px;
+    height: 720px;
+    margin: auto;
+  }
+
+  /*субтитры можно стилизовать через псевдоэлемент ::cue */
+  /* ::cue {
+    color: red;
+    background-color: black;
+    font: 1em sans-serif;
+  } */
+</style>
+<body>
+  <div id="playerContainer">
+    <h3>HTML5 local video file player</h3>
+    <p id="message">Chose two files. One with .mp4 extensions another subtitles .vtt</p>
+    <input type="file" multiple/>
+    <video id="video" controls autoplay>
+      <track id="subTrack" src="" default>
+    </video>
+  </div>
+  <script>
+    (function localFileVideoPlayer() {
+      'use strict'
+      const URL = window.URL || window.webkitURL;
+      const videoNode = document.querySelector('video');
+      const subTrackElem = document.querySelector('#subTrack');
+      const message = document.querySelector('#message');
+
+      const playSelectedFile = function (event) {
+        let videoFile;
+        let subFile;
+        setVideoInCenter('test');
+        for (let i = 0; i < this.files.length; i++) {
+          let canPlay = videoNode.canPlayType(this.files[i].type);
+          if (canPlay === 'maybe') {
+            videoFile = this.files[i];
+            message.innerHTML = 'Now play: ' + videoFile.name;
+          }
+          if (canPlay === '') { subFile = this.files[i]; }
+          if (i > 1) { break }
+        }
+
+        const videoFileURL = URL.createObjectURL(videoFile);
+
+        if (subFile) {
+          const subFileURL = URL.createObjectURL(subFile);
+          subTrackElem.setAttribute('src', subFileURL);
+        }
+        videoNode.src = videoFileURL;
+      }
+      const inputNode = document.querySelector('input');
+      inputNode.addEventListener('change', playSelectedFile, false);
+
+      function pauseByClick(event) {
+        if (event.target.tagName === 'VIDEO') {
+          const video = event.target;
+          const paused = video.paused;
+          if (!paused) {
+            video.pause();
+          } else {
+            video.play();
+          }
+        }
+      }
+
+      function handleKeyDown(event) {
+        event.preventDefault();
+        switch(event.code) {
+          case 'Space':
+            const paused = videoNode.paused;
+            if (!paused) {
+              videoNode.pause();
+            } else {
+              videoNode.play();
+            }
+          break;
+          case 'ArrowRight':
+            videoNode.currentTime = videoNode.currentTime + 4;
+          break;
+          case 'ArrowLeft':
+            videoNode.currentTime = videoNode.currentTime - 4;
+          break;
+          default:
+            return null
+        }
+      }
+      videoNode.addEventListener('click', pauseByClick, false);
+      document.addEventListener('keydown', handleKeyDown, false);
+
+      function setVideoInCenter() {
+        /* Нужно вычислить серидину окна браузера и с учетом этих координат 
+        проскроллить горизонтальную и вертикальную прокрутки после загрузки страницы
+        чтобы видео-фрейм оказался в середине экрана.
+        Но пока что просто прокручиваем видео в цент относительно документа. 
+        */
+
+        /* Вызов через setTimeout для того, чтобы функция scrollTo вызывалась после того как применятся css стили */
+        setTimeout(() => { window.scrollTo(1400, 700) }, 0)
+      }
+      window.onload = setVideoInCenter();
+    })()
+  </script>
+</body>
+</html>
