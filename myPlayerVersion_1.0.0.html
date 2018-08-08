@@ -132,7 +132,6 @@
       // скрыть(показать) элементы управления
       const showControlsButton = document.querySelector(".playerContainer__hideControlsButton");
       function hideControlsButtonHandle() {
-        console.log("videoNode.controls", videoNode);
         if(!videoNode.controls) {
           videoNode.controls = true;
           showControlsButton.innerHTML = "HideControls";
