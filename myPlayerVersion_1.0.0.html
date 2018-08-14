@@ -35,7 +35,6 @@
   .emphasized {
     color:cadetblue;
     font-style: italic;
-    font-weight: 700;
   }
 
   /*субтитры можно стилизовать через псевдоэлемент ::cue */
@@ -73,7 +72,7 @@
           let canPlay = videoNode.canPlayType(this.files[i].type);
           if (canPlay === 'maybe') {
             videoFile = this.files[i];
-            message.innerHTML = 'Now play: ' + videoFile.name;
+            message.innerHTML = `Now play: <span class="emphasized">${videoFile.name}</span>`;
             addPlayedFileNameLocalStorage(videoFile.name);
           }
           if (canPlay === '') { subFile = this.files[i]; }
