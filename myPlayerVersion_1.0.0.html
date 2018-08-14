@@ -7,13 +7,14 @@
   <title>Simple Player</title>
 </head>
 <style>
-  h3 { color: rgb(80, 119, 133); margin: 3px auto; }
+  html { font-family: Arial, sans-serif; }
   body { 
     padding-top: 700px;
     background-color: rgb(181, 192, 192);
     height: 1800px;
     width: 4500px;
   }
+  h3 { color: rgb(80, 119, 133); margin: 3px auto; font-size: 21px;}
   p { margin: 7px auto; }
   input { 
     display: inline-block;
@@ -31,6 +32,12 @@
     margin-top: 10px;
   }
 
+  .emphasized {
+    color:cadetblue;
+    font-style: italic;
+    font-weight: 700;
+  }
+
   /*субтитры можно стилизовать через псевдоэлемент ::cue */
   /* ::cue {
     color: red;
@@ -41,12 +48,13 @@
 <body>
   <div class="playerContainer">
     <h3>HTML5 local video file player</h3>
-    <p class="playerContainer__message">Chose two files. One with .mp4 extensions another subtitles .vtt</p>
+    <p class="playerContainer__message">Chose two files. One with <span class="emphasized">.mp4</span> extensions another subtitles <span class="emphasized">.vtt</span></p>
     <input type="file" multiple/>
     <button class="playerContainer__hideControlsButton">HideControls</button>
     <video id="video" contrors autoplay>
       <track id="subTrack" src="" default>
     </video>
+    <p>Last played file name: <span class="lastPlayedFile emphasized"></span></p>
   </div>
   <script>
     (function localFileVideoPlayer() {
@@ -55,6 +63,7 @@
       const videoNode = document.querySelector('video');
       const subTrackElem = document.querySelector('#subTrack');
       const message = document.querySelector('.playerContainer > .playerContainer__message');
+      let lastPlayedFileHolder = document.querySelector('.lastPlayedFile');
 
       const playSelectedFile = function (event) {
         let videoFile;
@@ -65,6 +74,7 @@
           if (canPlay === 'maybe') {
             videoFile = this.files[i];
             message.innerHTML = 'Now play: ' + videoFile.name;
+            addPlayedFileNameLocalStorage(videoFile.name);
           }
           if (canPlay === '') { subFile = this.files[i]; }
           if (i > 1) { break }
@@ -141,6 +151,18 @@
         }
       }
       showControlsButton.addEventListener('click', hideControlsButtonHandle);
+
+      // [TO DO] Добавить сохранение названия последнего загруженного видео в localStorag браузера.
+      function showLastPlayedFile() {
+        let lastPlayedFile = window.localStorage.getItem('lastPlayedFile');
+        if (lastPlayedFile) {
+          lastPlayedFileHolder.innerHTML = lastPlayedFile;
+        }
+      }
+      window.addEventListener('load', showLastPlayedFile);
+      function addPlayedFileNameLocalStorage(fileName) {
+        window.localStorage.setItem('lastPlayedFile', fileName);
+      }
     })()
   </script>
 </body>
