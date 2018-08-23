@@ -38,16 +38,19 @@ const localFileVideoPlayer = () => {
       if (i > 1) { break; }
     }
 
-    const videoFileURL = URL.createObjectURL(videoFile);
+    if (videoFile) {
+      const videoFileURL = URL.createObjectURL(videoFile);
 
-    if (subFile) {
-      subTrackElem.src = URL.createObjectURL(subFile);
+      if (subFile) {
+        subTrackElem.src = URL.createObjectURL(subFile);
+      }
+      videoNode.src = videoFileURL;
+      /* для Firefoxe. Воспроизвести видео сразу после загрузки файла пользователем */
+      videoNode.addEventListener('loadeddata', () => {
+        videoNode.play();
+      });
     }
-    videoNode.src = videoFileURL;
-    /* для Firefoxe. Воспроизвести видео сразу после загрузки файла пользователем */
-    videoNode.addEventListener('loadeddata', () => {
-      videoNode.play();
-    });
+    return null;
   }
   const inputNode = document.querySelector('input');
   inputNode.addEventListener('change', playSelectedFile, false);
