@@ -25,6 +25,8 @@ const localFileVideoPlayer = () => {
     let videoFile;
     let subFile;
     setVideoInCenter();
+    /* Взять только первые два файла из загруженных пользователем.
+    Предпологается, что один из них видео файл, другой субтитры. */
     for (let i = 0; i < this.files.length; i += 1) {
       const canPlay = videoNode.canPlayType(this.files[i].type);
       if (canPlay === 'maybe') {
@@ -43,11 +45,15 @@ const localFileVideoPlayer = () => {
       subTrackElem.setAttribute('src', subFileURL);
     }
     videoNode.src = videoFileURL;
-  };
+    /* для Firefoxe. Воспроизвести видео сразу после загрузки файла пользователем */
+    videoNode.addEventListener('loadeddata', () => {
+      videoNode.play();
+    });
+  }
   const inputNode = document.querySelector('input');
   inputNode.addEventListener('change', playSelectedFile, false);
 
-  function pauseByClick(event) {
+  const pauseByClick = (event) => {
     if (event.target.tagName === 'VIDEO') {
       const video = event.target;
       const { paused } = video;
@@ -57,8 +63,9 @@ const localFileVideoPlayer = () => {
         video.play();
       }
     }
-  }
+  };
 
+  /* Пауза при нажатии пробела и перемотка при нажатии стрелок */
   const handleKeyDown = (event) => {
     event.preventDefault();
     switch (event.code) {
@@ -107,8 +114,6 @@ const localFileVideoPlayer = () => {
     }
   };
   window.addEventListener('load', showLastPlayedFile);
-  /* по умолчанию при загрузке страницы всегда показывать элементы управления */
-  window.addEventListener('load', () => { videoNode.controls = true; });
 };
 
 localFileVideoPlayer();
