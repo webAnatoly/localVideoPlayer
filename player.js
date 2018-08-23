@@ -41,8 +41,7 @@ const localFileVideoPlayer = () => {
     const videoFileURL = URL.createObjectURL(videoFile);
 
     if (subFile) {
-      const subFileURL = URL.createObjectURL(subFile);
-      subTrackElem.setAttribute('src', subFileURL);
+      subTrackElem.src = URL.createObjectURL(subFile);
     }
     videoNode.src = videoFileURL;
     /* для Firefoxe. Воспроизвести видео сразу после загрузки файла пользователем */
